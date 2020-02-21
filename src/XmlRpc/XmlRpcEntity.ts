@@ -1,4 +1,3 @@
-import { WritableKeys } from '../helpers';
 import { GetFieldsToPopulate } from './XmlPropertyDecorator';
 
 type IndexedEntity<T extends XmlRpcEntity<T>> = {

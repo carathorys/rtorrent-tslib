@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "dev": "jest --watch",
+    "dev": "jest --watch --unhandled-rejections=none",
     "build": "rimraf dist && tsc",
     "test": "jest",
     "coverage": "jest --coverage"

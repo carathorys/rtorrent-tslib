@@ -8,7 +8,7 @@ const InitializeByDefault = Symbol('InitializeByDefault');
 export type XmlRpcEntityMetadata<T> = { key: WritableKeys<T>; initialize: boolean };
 
 export const GetXmlRpcPropertyKey = <T extends XmlRpcEntity<T>>(
-  target: T,
+  target: T | (new () => T),
   propertyKey: WritableKeys<T>,
 ): string => {
   const data = Reflect.getMetadata(XmlPropertyMetadataKey, target, propertyKey.toString());
@@ -16,28 +16,31 @@ export const GetXmlRpcPropertyKey = <T extends XmlRpcEntity<T>>(
 };
 
 export const GetFieldsToPopulate = <T extends XmlRpcEntity<T>>(
-  target: XmlRpcEntity<T>,
+  target: XmlRpcEntity<T> | (new () => XmlRpcEntity<T>),
 ): XmlRpcEntityMetadata<T>[] => {
   return Reflect.getMetadata(InitializeByDefault, target);
 };
 
-export const XmlRpcKey = <T extends XmlRpcEntity<T>, P extends WritableKeys<T>>(
+type TAlias<T> = T | (new () => T);
+
+export const XmlRpcKey = <T extends XmlRpcEntity<T>, A = TAlias<T>>(
   xmlPropertyName: string,
   initialize: boolean = false,
 ): {
-  (target: T | (new () => T), key: string | symbol): void;
-  (target: T, propertyKey: P): void;
+  (target: A, key: WritableKeys<T>): void;
+  (target: A, key: WritableKeys<T>): void;
 } => {
-  // tslint:disable-next-line: no-empty
-  const classLevelMetadata = (_: T | (new () => T)) => {};
+  const classLevelMetadata = (_: A) => {
+    // tslint:disable-next-line: no-empty
+  };
 
-  const propertyLevelMetadata = (target: T, key: P | string | symbol): void => {
+  const propertyLevelMetadata = (target: A, key: WritableKeys<T>): void => {
     const existing = Reflect.getOwnMetadata(InitializeByDefault, target) || [];
     existing.push({ key, initialize });
     Reflect.defineMetadata(InitializeByDefault, existing, target);
     Reflect.defineMetadata(XmlPropertyMetadataKey, xmlPropertyName, target, key.toString());
   };
-  return (target: T, key: P | string | symbol) => {
+  return (target: A, key: WritableKeys<T>) => {
     classLevelMetadata(target), propertyLevelMetadata(target, key);
   };
 };

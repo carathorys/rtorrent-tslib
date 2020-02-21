@@ -1,70 +1,70 @@
 import { XmlRpcKey, XmlRpcEntity } from '../XmlRpc';
 
 export class Download extends XmlRpcEntity<Download> {
-  @XmlRpcKey('d.name')
+  @XmlRpcKey<Download>('d.name')
   public name: string;
 
-  @XmlRpcKey('d.directory')
+  @XmlRpcKey<Download>('d.directory')
   public directory: string;
 
-  @XmlRpcKey('d.state')
+  @XmlRpcKey<Download>('d.state')
   public state: boolean;
 
-  @XmlRpcKey('d.is_open')
+  @XmlRpcKey<Download>('d.is_open')
   public isOpen: boolean;
 
-  @XmlRpcKey('d.is_active')
+  @XmlRpcKey<Download>('d.is_active')
   public isActive: boolean;
 
-  @XmlRpcKey('d.bytes_done')
+  @XmlRpcKey<Download>('d.bytes_done')
   public bytesDone: number;
 
-  @XmlRpcKey('d.complete')
+  @XmlRpcKey<Download>('d.complete')
   public complete: boolean;
 
-  @XmlRpcKey('d.completed_bytes')
+  @XmlRpcKey<Download>('d.completed_bytes')
   public completedBytes: number;
 
-  @XmlRpcKey('d.connection_current')
+  @XmlRpcKey<Download>('d.connection_current')
   public connectionCurrent: number;
 
-  @XmlRpcKey('d.connection_leech')
+  @XmlRpcKey<Download>('d.connection_leech')
   public connectedLeeches: number;
 
-  @XmlRpcKey('d.connection_seed')
+  @XmlRpcKey<Download>('d.connection_seed')
   public connectedSeeds: number;
 
-  @XmlRpcKey('d.creation_date')
+  @XmlRpcKey<Download>('d.creation_date')
   public creationDate: string;
 
-  @XmlRpcKey('d.down.rate')
+  @XmlRpcKey<Download>('d.down.rate')
   public downRate: number;
 
-  @XmlRpcKey('d.hash')
+  @XmlRpcKey<Download>('d.hash')
   public hash: string;
 
-  @XmlRpcKey('d.hashing')
+  @XmlRpcKey<Download>('d.hashing')
   public hashing: number;
 
-  @XmlRpcKey('d.is_partially_done')
+  @XmlRpcKey<Download>('d.is_partially_done')
   public isPartiallyDone: boolean;
 
-  @XmlRpcKey('d.is_private')
+  @XmlRpcKey<Download>('d.is_private')
   public isPrivate: boolean;
 
-  @XmlRpcKey('d.bitfield')
+  @XmlRpcKey<Download>('d.bitfield')
   public bitfield: boolean;
 
-  @XmlRpcKey('d.priority')
+  @XmlRpcKey<Download>('d.priority')
   public priority: number;
 
-  @XmlRpcKey('d.peers_accounted')
+  @XmlRpcKey<Download>('d.peers_accounted')
   public peers: number;
 
-  @XmlRpcKey('d.peers_complete')
+  @XmlRpcKey<Download>('d.peers_complete')
   public peersCompleted: number;
 
-  @XmlRpcKey('d.peers_connected')
+  @XmlRpcKey<Download>('d.peers_connected')
   public connectedPeers: number;
 
   public get IsClosed(): boolean {
