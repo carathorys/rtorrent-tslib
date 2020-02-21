@@ -1,38 +1,17 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "incremental": true,
-    "target": "ESNext",
-    "module": "ESNext",
-    "allowJs": true,
-    "checkJs": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
     "baseUrl": "./",
     "outDir": "./dist",
-    "sourceRoot": "./src",
-    "removeComments": true,
-    "noEmit": false,
-    "importHelpers": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": true,
-    "noImplicitReturns": true,
-    "esModuleInterop": true,
+    "sourceMap": true,
+    "declaration": true,
+    "downlevelIteration": true,
     "experimentalDecorators": true,
-    "forceConsistentCasingInFileNames": true,
-    "plugins": [{
-      "name": "typescript-eslint-language-service",
-      "watchDirs": ["/", "./src"]
-    }],
-    "paths": {
-      "tslib": "tslib/tslib.d.ts"
-    }
+    "module": "esnext",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2015",
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["ES2018", "DOM"]
   }
 }

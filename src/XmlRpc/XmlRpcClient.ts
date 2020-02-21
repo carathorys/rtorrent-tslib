@@ -1,8 +1,9 @@
+import { XmlRpcClientOptions, XmlRpcCookies, XmlRpcHeadersProcessor } from './Types';
 import { createClient, createSecureClient, Client } from 'xmlrpc';
-import { ClientOptions } from './types';
+
 export class XmlRpcClient {
-  private readonly client: Client;
-  constructor(clientOptions: ClientOptions | string, secure: boolean = true) {
+  private client: Client;
+  constructor(clientOptions: XmlRpcClientOptions | string, secure: boolean = true) {
     this.client = secure === true ? createSecureClient(clientOptions) : createClient(clientOptions);
   }
 
@@ -18,23 +19,29 @@ export class XmlRpcClient {
     });
   }
 
-  public get Cookies() {
+  public get headersProcessors(): { processors: XmlRpcHeadersProcessor[] } {
+    return this.client.headersProcessors;
+  }
+
+  public get Cookies(): XmlRpcCookies {
     return this.client.cookies;
   }
 
-  public get isSecure() {
+  public get isSecure(): boolean {
     return this.client.isSecure;
   }
 
-  public get options() {
+  public get options(): XmlRpcClientOptions {
     return this.client.options;
   }
 
-  public getCookie(name: string) {
+  public getCookie(name: string): string {
     return this.client.getCookie(name);
   }
 
-  public setCookie(name: string, value: string) {
-    return this.client.setCookie(name, value);
+  public setCookie(name: string, value: string): XmlRpcClient {
+    // TODO: Check if this is valid usage
+    this.client = this.client.setCookie(name, value);
+    return this;
   }
 }

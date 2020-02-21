@@ -1,7 +1,6 @@
-import { XmlRpcKey, XmlRpcEntity, GetFieldsToPopulate } from '../XmlRpc';
+import { XmlRpcKey, XmlRpcEntity } from '../XmlRpc';
 
 export class Download extends XmlRpcEntity<Download> {
-
   @XmlRpcKey('d.name', true)
   public name: string;
 

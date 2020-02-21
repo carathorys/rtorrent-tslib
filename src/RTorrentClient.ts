@@ -1,25 +1,18 @@
 import { GetXmlRpcPropertyKey, GetFieldsToPopulate } from './XmlRpc/XmlPropertyDecorator';
-import { WritableKeys } from '../helpers';
-import { Download } from './models/Download';
-import { XmlRpcClient } from './XmlRpc/base';
+import { WritableKeys } from './helpers';
+import { Download } from './models';
+import { XmlRpcClient, XmlRpcClientOptions } from './XmlRpc';
 
 export class XmlRpcRepository extends XmlRpcClient {
   protected readonly downloadInstance: Download;
 
-  constructor() {
-    super(
-      {
-        host: '192.168.1.100',
-        port: 80,
-        path: '/RPC2',
-      },
-      false,
-    );
+  constructor(clientOptions: XmlRpcClientOptions | string, secure: boolean = false) {
+    super(clientOptions, secure);
     this.downloadInstance = new Download();
   }
 
   public async getTorrents(...keys: WritableKeys<Download>[]) {
-    const torrentIds = await this.methodCall<Array<string>>('download_list', ['']);
+    const torrentIds = await this.methodCall<string[]>('download_list', ['']);
     return await this.getTorrentDetails(torrentIds, ...keys);
   }
 
@@ -27,8 +20,8 @@ export class XmlRpcRepository extends XmlRpcClient {
     if (keys?.length <= 0) {
       keys = GetFieldsToPopulate(new Download());
     }
-    const mappedKeys = this.PrepareQuery(keys)?.map((x) => `${x}=`);
-    return (await this.methodCall('d.multicall2', torrentIds, '', ...mappedKeys)).map((x) => {
+    const mappedKeys = this.PrepareQuery(keys)?.map((x: string) => `${x}=`);
+    return (await this.methodCall('d.multicall2', torrentIds, '', ...mappedKeys)).map((x: []) => {
       const obj: Download = new Download();
       keys.forEach((key, index) => {
         obj.setValue(key, x[index]);
@@ -41,9 +34,7 @@ export class XmlRpcRepository extends XmlRpcClient {
     await this.methodCall('system.listMethods', []);
   }
 
-  public PrepareQuery(
-    keysToInclude: WritableKeys<Download> | Array<WritableKeys<Download>>,
-  ): string[] {
+  public PrepareQuery(keysToInclude: WritableKeys<Download> | WritableKeys<Download>[]): string[] {
     if (keysToInclude instanceof Array) {
       return keysToInclude.map((keyToInclude) => {
         return GetXmlRpcPropertyKey<Download>(this.downloadInstance, keyToInclude);
