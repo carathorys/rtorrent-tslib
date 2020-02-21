@@ -1,9 +1,10 @@
 {
   "name": "rtorrent-tslib",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "rTorrent library for typescript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "dev": "npm run build -- --watch",
     "build": "rimraf dist && tsc",
@@ -29,7 +30,7 @@
     "ts-node": "^8.6.2",
     "tslib": "^1.11.0",
     "tslint": "^6.0.0",
-    "typescript": "^3.8.2",
+    "typescript": "^3.7.0",
     "reflect-metadata": "^0.1.13"
   }
 }

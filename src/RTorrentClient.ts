@@ -18,7 +18,7 @@ export class XmlRpcRepository extends XmlRpcClient {
 
   public async getTorrentDetails(torrentIds: string[], ...keys: WritableKeys<Download>[]) {
     if (keys?.length <= 0) {
-      keys = GetFieldsToPopulate(new Download());
+      keys = GetFieldsToPopulate(new Download()).map((x) => x.key);
     }
     const mappedKeys = this.PrepareQuery(keys)?.map((x: string) => `${x}=`);
     return (await this.methodCall('d.multicall2', torrentIds, '', ...mappedKeys)).map((x: []) => {

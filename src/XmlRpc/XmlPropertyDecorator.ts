@@ -5,6 +5,8 @@ import { WritableKeys } from '../helpers';
 const XmlPropertyMetadataKey = Symbol('XmlRpcMetadata');
 const InitializeByDefault = Symbol('InitializeByDefault');
 
+export type XmlRpcEntityMetadata<T> = { key: WritableKeys<T>; initialize: boolean };
+
 export const GetXmlRpcPropertyKey = <T extends XmlRpcEntity<T>>(
   target: T,
   propertyKey: WritableKeys<T>,
@@ -15,13 +17,13 @@ export const GetXmlRpcPropertyKey = <T extends XmlRpcEntity<T>>(
 
 export const GetFieldsToPopulate = <T extends XmlRpcEntity<T>>(
   target: XmlRpcEntity<T>,
-): WritableKeys<T>[] => {
+): XmlRpcEntityMetadata<T>[] => {
   return Reflect.getMetadata(InitializeByDefault, target);
 };
 
 export const XmlRpcKey = <T extends XmlRpcEntity<T>, P extends WritableKeys<T>>(
   xmlPropertyName: string,
-  initialize: boolean = true,
+  initialize: boolean = false,
 ): {
   (target: T | (new () => T), key: string | symbol): void;
   (target: T, propertyKey: P): void;
@@ -30,11 +32,9 @@ export const XmlRpcKey = <T extends XmlRpcEntity<T>, P extends WritableKeys<T>>(
   const classLevelMetadata = (_: T | (new () => T)) => {};
 
   const propertyLevelMetadata = (target: T, key: P | string | symbol): void => {
-    if (initialize) {
-      const existing = Reflect.getOwnMetadata(InitializeByDefault, target) || [];
-      existing.push(key);
-      Reflect.defineMetadata(InitializeByDefault, existing, target);
-    }
+    const existing = Reflect.getOwnMetadata(InitializeByDefault, target) || [];
+    existing.push({ key, initialize });
+    Reflect.defineMetadata(InitializeByDefault, existing, target);
     Reflect.defineMetadata(XmlPropertyMetadataKey, xmlPropertyName, target, key.toString());
   };
   return (target: T, key: P | string | symbol) => {

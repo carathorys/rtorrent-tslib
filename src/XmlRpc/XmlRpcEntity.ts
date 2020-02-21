@@ -7,8 +7,10 @@ type IndexedEntity<T extends XmlRpcEntity<T>> = {
 
 export class XmlRpcEntity<T extends XmlRpcEntity<T>> {
   constructor() {
-    GetFieldsToPopulate(this).forEach((field) => {
-      this.setValue<T, any>(field, null);
+    GetFieldsToPopulate(this)?.forEach((field) => {
+      if (field?.initialize === true) {
+        this.setValue<T, any>(field.key, null);
+      }
     });
   }
 

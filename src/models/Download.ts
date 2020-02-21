@@ -1,7 +1,7 @@
 import { XmlRpcKey, XmlRpcEntity } from '../XmlRpc';
 
 export class Download extends XmlRpcEntity<Download> {
-  @XmlRpcKey('d.name', true)
+  @XmlRpcKey('d.name')
   public name: string;
 
   @XmlRpcKey('d.directory')

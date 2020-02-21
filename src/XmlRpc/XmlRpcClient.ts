@@ -8,7 +8,6 @@ export class XmlRpcClient {
   }
 
   public async methodCall<T extends any>(method: string, ...params: any): Promise<T> {
-    console.log(method, params);
     return new Promise((resolve, reject) => {
       this.client.methodCall(method, params, (error, value) => {
         if (!!error) {
