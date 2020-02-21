@@ -3,15 +3,19 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist",
+    "rootDir": "./src",
     "sourceMap": true,
     "declaration": true,
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "module": "ESNext",
     "moduleResolution": "Node",
+    "esModuleInterop": true,
     "importHelpers": true,
-    "target": "ES2018",
+    "target": "ES5",
     "typeRoots": ["node_modules/@types"],
     "lib": ["ES2018", "DOM"]
-  }
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["**/*.[sS]pec.ts", "**/*.[tT]est.ts"]
 }
