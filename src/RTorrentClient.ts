@@ -3,16 +3,17 @@ import { WritableKeys } from './helpers';
 import { Download } from './models';
 import { XmlRpcClient, XmlRpcClientOptions } from './XmlRpc';
 
-export class XmlRpcRepository extends XmlRpcClient {
+export class RTorrentClient {
   protected readonly downloadInstance: Download;
+  protected readonly client: XmlRpcClient;
 
   constructor(clientOptions: XmlRpcClientOptions | string, secure: boolean = false) {
-    super(clientOptions, secure);
+    this.client = new XmlRpcClient(clientOptions, secure);
     this.downloadInstance = new Download();
   }
 
   public async getTorrents(...keys: WritableKeys<Download>[]) {
-    const torrentIds = await this.methodCall<string[]>('download_list', ['']);
+    const torrentIds = await this.client.methodCall<string[]>('download_list', ['']);
     return await this.getTorrentDetails(torrentIds, ...keys);
   }
 
@@ -21,7 +22,7 @@ export class XmlRpcRepository extends XmlRpcClient {
       keys = GetFieldsToPopulate(new Download()).map((x) => x.key);
     }
     const mappedKeys = this.PrepareQuery(keys)?.map((x: string) => `${x}=`);
-    return (await this.methodCall('d.multicall2', torrentIds, '', ...mappedKeys)).map((x: []) => {
+    return (await this.client.methodCall('d.multicall2', torrentIds, '', ...mappedKeys)).map((x: []) => {
       const obj: Download = new Download();
       keys.forEach((key, index) => {
         obj.setValue(key, x[index]);
@@ -31,7 +32,7 @@ export class XmlRpcRepository extends XmlRpcClient {
   }
 
   public async getCommands() {
-    await this.methodCall('system.listMethods', []);
+    await this.client.methodCall('system.listMethods', []);
   }
 
   public PrepareQuery(keysToInclude: WritableKeys<Download> | WritableKeys<Download>[]): string[] {
