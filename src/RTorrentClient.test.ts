@@ -66,7 +66,7 @@ const methodCall = (method: string, parameters: any[], callback?: (err: any, val
   }
 };
 
-jest.mock('xmlrpc', () => {
+jest.mock('davexmlrpc', () => {
   return {
     createClient: () => {
       return {
