@@ -18,8 +18,8 @@
   "author": "Balázs Gallay",
   "license": "ISC",
   "dependencies": {
-    "davexmlrpc": "^0.4.24",
     "rxjs": "^6.5.4",
+    "xmlrpc": "^1.3.2",
     "zone.js": "^0.10.2"
   },
   "devDependencies": {

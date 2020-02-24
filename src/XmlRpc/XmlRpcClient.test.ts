@@ -1,6 +1,6 @@
 import { XmlRpcClient } from './XmlRpcClient';
 
-jest.mock('davexmlrpc', () => ({
+jest.mock('xmlrpc', () => ({
   createClient: () => {
     return {
       methodCall: (method: string, parameters: any[], callback?: (err: any, val: any) => void) => {

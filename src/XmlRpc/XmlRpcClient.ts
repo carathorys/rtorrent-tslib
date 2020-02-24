@@ -1,5 +1,5 @@
 import { XmlRpcClientOptions, XmlRpcCookies, XmlRpcHeadersProcessor } from './Types';
-import { createClient, createSecureClient, Client } from 'davexmlrpc';
+import { createClient, createSecureClient, Client } from 'xmlrpc';
 
 export class XmlRpcClient {
   private client: Client;
