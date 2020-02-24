@@ -1,6 +1,6 @@
 {
   "name": "rtorrent-tslib",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "rTorrent library for typescript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

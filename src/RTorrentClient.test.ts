@@ -15,12 +15,6 @@ function generate(allowedCharacters: string = 'ABCDEFG0123456789', length: numbe
       return allowedCharacters.charAt(Math.floor(Math.random() * charactersLength));
     })
     .join('');
-  // let i = 0;
-  // let result = '';
-  // while (true) {
-  //   if (yield i++) break;
-  //   result += ;
-  // }
 }
 
 function generateMulti(
@@ -49,34 +43,30 @@ function torrentGenerator(count: number = 5) {
 }
 
 const torrents = torrentGenerator(100);
+// tslint:disable-next-line: variable-name
 const torrent_id_list = torrents.map((x) => x.hash);
-const method_list = ['d2.multicall', 'sysstem.listMethods', 'download_list'];
+// tslint:disable-next-line: variable-name
+const method_list = ['d.multicall2', 'system.listMethods', 'download_list'];
+const methodCall = (method: string, parameters: any[], callback?: (err: any, val: any) => void) => {
+  const error = parameters.filter((x) => x.error === true);
+  if (error.length > 0) {
+    callback(error[0], { method });
+  } else {
+    switch (method) {
+      case 'd.multicall2':
+        callback(undefined, torrents);
+        break;
+      case 'download_list':
+        callback(undefined, torrent_id_list);
+        break;
+      case 'system.listMethods':
+        callback(undefined, method_list);
+        break;
+    }
+  }
+};
 
 jest.mock('xmlrpc', () => {
-  const methodCall = (
-    method: string,
-    parameters: any[],
-    callback?: (err: any, val: any) => void,
-  ) => {
-    const error = parameters.filter((x) => x.error === true);
-    if (error.length > 0) {
-      callback(error[0], { method });
-    } else {
-      switch (method) {
-        case 'd.multicall2':
-          console.log('requested properties: ', parameters.slice(2));
-          callback(undefined, []);
-          break;
-        case 'download_list':
-          callback(undefined, torrent_id_list);
-          break;
-        case 'system.listMethods':
-          callback(undefined, method_list);
-          break;
-      }
-    }
-  };
-
   return {
     createClient: () => {
       return {
@@ -109,8 +99,11 @@ describe('RTorrentClient', () => {
   });
 
   it('should be able to fetch torrent details', async () => {
-    await expect(
-      client.getTorrentDetails([torrents[0].hash], 'directory', 'name'),
-    ).resolves.toBeTruthy();
+    const promise = client.getTorrentDetails(
+      torrents.map((x) => x.hash),
+      'directory',
+      'name',
+    );
+    await expect(promise).resolves.toBeTruthy();
   });
 });
