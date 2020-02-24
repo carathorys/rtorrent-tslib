@@ -1,22 +1,22 @@
-export interface XmlRpcClientOptions {
+export interface ClientOptions {
   host?: string;
   path?: string;
   port?: number;
-  url?: string;
-  cookies?: boolean;
+  isSecure?: boolean;
+  useCookies?: boolean;
   headers?: { [header: string]: string };
   basic_auth?: { user: string; pass: string };
-  method?: string;
+  method?: 'CONNECT' | 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT' | 'TRACE';
 }
 
-export interface XmlRpcCookies {
+export interface Cookies {
   get(name: string): string;
   set(name: string, value: string, options?: { secure: boolean; expires: Date }): void;
   toString(): string;
 }
 export type Headers = { [header: string]: string };
 
-export interface XmlRpcHeadersProcessor {
+export interface HeadersProcessor {
   composeRequest(headers: Headers): void;
   parseResponse(headers: Headers): void;
 }

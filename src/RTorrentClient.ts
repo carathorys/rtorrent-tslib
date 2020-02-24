@@ -1,14 +1,14 @@
 import { GetXmlRpcPropertyKey, GetFieldsToPopulate } from './XmlRpc/XmlPropertyDecorator';
 import { WritableKeys } from './helpers';
 import { Download } from './models';
-import { XmlRpcClient, XmlRpcClientOptions } from './XmlRpc';
+import { XmlRpcClient, ClientOptions } from './XmlRpc';
 
 export class RTorrentClient {
   protected readonly downloadInstance: Download;
   protected readonly client: XmlRpcClient;
 
-  constructor(clientOptions: XmlRpcClientOptions | string, secure: boolean = false) {
-    this.client = new XmlRpcClient(clientOptions, secure);
+  constructor(clientOptions: ClientOptions) {
+    this.client = new XmlRpcClient(clientOptions);
     this.downloadInstance = new Download();
   }
 
