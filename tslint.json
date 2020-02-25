@@ -1,12 +1,6 @@
 {
-  "defaultSeverity": "warning",
-  "extends": ["tslint:recommended"],
-  "jsRules": {},
-  "rules": {
-    "no-console": false,
-    "no-this-assignment": false,
-    "no-conditional-assignment": false,
-    "no-string-literal": false
-  },
-  "rulesDirectory": []
+  "extends": [
+    "tslint-config-standard",
+    "tslint-config-prettier"
+  ]
 }

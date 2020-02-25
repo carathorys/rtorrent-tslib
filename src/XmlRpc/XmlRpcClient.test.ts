@@ -1,54 +1,43 @@
 import { XmlRpcClient } from './XmlRpcClient';
-
-// jest.mock('xmlrpc', () => ({
-//   createClient: () => {
-//     return {
-//       methodCall: (method: string, parameters: any[], callback?: (err: any, val: any) => void) => {
-//         const error = parameters.filter((x) => x.error === true);
-//         if (error.length > 0) {
-//           callback(error[0], parameters);
-//         }
-//         callback(false, parameters);
-//       },
-//     };
-//   },
-//   createSecureClient: () => {
-//     return {
-//       methodCall: (method: string, parameters: any[], callback?: (err: any, val: any) => void) => {
-//         const error = parameters.filter((x) => x.error === true);
-//         if (error.length > 0) {
-//           callback(error[0], parameters);
-//         }
-//         callback(false, parameters);
-//       },
-//     };
-//   },
-// }));
+import 'jest-fetch-mock';
+import { js2xml, xml2js } from 'xml-js';
 
 describe('XmlRpcClient', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
-  });
-  const client: XmlRpcClient = new XmlRpcClient({
-    host: 'localhost',
-    port: 41442,
-    path: 'RPC_PATH',
-  });
-  it('resolves the method call, returns the parameters', async () => {
-    const dummyParameters = ['parameters', { key: 'key', values: [1, 2, 3, 4, 5] }];
-    expect(client.methodCall('methodName', ...dummyParameters)).resolves.toStrictEqual(
-      dummyParameters,
-    );
+    fetchMock.resetMocks();
   });
 
-  it('rejects the method call, returns with the `parameters.reject` part', async () => {
-    const dummyParameters = [
-      'parameters',
-      { key: 'key', values: [1, 2, 3, 4, 5] },
-      { error: true, message: 'unknown' },
-    ];
-    await expect(client.methodCall('x', ...dummyParameters)).rejects.toStrictEqual(
-      dummyParameters[2],
-    );
+  const client: XmlRpcClient = new XmlRpcClient({
+    host: 'localhost',
+    port: 31245,
+    path: '/RPC2',
+    isSecure: false,
   });
+  it('resolves the method call, returns the parameters', async () => {
+    fetchMock.mockResponse(async r => {
+      return r.text();
+      // return new Promise(async (res, rej) => {
+      //   const json: any = xml2js(await r.text(), { compact: true });
+      //   let obj: any = {};
+      //   return res(json.methodCall.params.param);
+      // });
+    });
+    const dummyParameters = ['parameters', { key: 'key', values: [1, 2, 3, 4, 5] }];
+    await expect(client.methodCall('methodName', ...dummyParameters)).resolves.toStrictEqual(dummyParameters);
+  });
+
+  // it('rejects the method call, returns with the `parameters.reject` part', async () => {
+  //   fetchMock.mockResponse(async req => {
+  //     return new Promise(async (res, rej) => {
+  //       const requestBody = await req.json();
+  //       rej(requestBody[2]);
+  //     });
+  //   });
+  //   const dummyParameters = [
+  //     'parameters',
+  //     { key: 'key', values: [1, 2, 3, 4, 5] },
+  //     { error: true, message: 'unknown' },
+  //   ];
+  //   await expect(client.methodCall('x', ...dummyParameters)).rejects.toStrictEqual(dummyParameters[2]);
+  // });
 });
