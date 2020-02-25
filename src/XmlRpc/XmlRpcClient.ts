@@ -40,41 +40,39 @@ export class XmlRpcClient {
     };
     if (params?.length > 0) {
       // TODO: parse data
-      jsObj.methodCall.params = { param: this.parseParameters(params) };
+      jsObj.methodCall.params = { param: this.serializeParameters(params) };
     }
     const body = js2xml(jsObj, { compact: true });
 
     const url = `${this.clientOptions.isSecure === true ? 'https' : 'http'}://${this.clientOptions.host}:${
       this.clientOptions.port
     }/${this.clientOptions.path}`;
-    console.log(`Sending request to url ${url} with body `, body);
-    try {
-      const p = await fetch(url, {
-        method: this.clientOptions.method,
-        headers: this.clientOptions.headers,
-        cache: 'no-cache',
-        credentials: 'include',
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        keepalive: true,
-        body: body.toString(),
-      }).then(p => p.json());
-      console.log('P:', p);
-      return p as any;
-      // });
-    } catch (err) {
-      console.log(err);
-      throw err;
-    }
+
+    return fetch(url, {
+      method: this.clientOptions.method,
+      headers: this.clientOptions.headers,
+      cache: 'no-cache',
+      credentials: 'include',
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+      keepalive: true,
+      body: body.toString(),
+    })
+      .then(p => p.text())
+      .then(x => {
+        const response = xml2js(x, { compact: true }) as any;
+
+        return response.methodResponse.params;
+      });
   }
 
-  private parseParameters(params: any[]) {
+  private serializeParameters(params: any[]) {
     return params.map(x => ({
-      ...this.paramToXml(x),
+      ...this.toXml(x),
     }));
   }
 
-  private paramToXml(param: any): any {
+  private toXml(param: any): any {
     switch (typeof param) {
       case 'number':
         if (Number.isInteger(param.valueOf())) {
@@ -87,16 +85,26 @@ export class XmlRpcClient {
         return { value: { double: param } };
       case 'object':
         if (param instanceof Array) {
-          return { value: { array: { data: param.map(x => this.paramToXml(x)) } } };
+          return { value: { array: { data: param.map(x => this.toXml(x)) } } };
         } else {
           return {
             value: {
               struct: {
-                member: [...Object.keys(param).map(key => ({ name: key, ...this.paramToXml(param[key]) }))],
+                member: [...Object.keys(param).map(key => ({ name: key, ...this.toXml(param[key]) }))],
               },
             },
           };
         }
+    }
+  }
+
+  private toObject(param: { value: any }): any {
+    switch (typeof param.value) {
+      case 'bigint':
+      case 'number': {
+        return param.value;
+        break;
+      }
     }
   }
 

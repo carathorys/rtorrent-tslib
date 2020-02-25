@@ -84,8 +84,10 @@ const methodCall = (method: string, parameters: any[], callback?: (err: any, val
 // })
 
 describe('RTorrentClient', () => {
-  // beforeEach(() => {
-  // });
+  beforeEach(() => {
+    // ignore
+    fetchMock.dontMock()
+  });
   const client = new RTorrentClient({
     host: '192.168.1.100',
     port: 80,

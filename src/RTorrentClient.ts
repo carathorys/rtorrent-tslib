@@ -23,6 +23,11 @@ export class RTorrentClient {
     return torrentIds;
   }
 
+  /**
+   * @description downloads the details of a torrent using `d.multicall2` method
+   * @param torrentIds torrent hashes to be fetched
+   * @param keys properties of a torrent (download) entity, which should be fetched
+   */
   public async getTorrentDetails(torrentIds: string[], ...keys: WritableKeys<Download>[]): Promise<Download[]> {
     if (keys?.length <= 0) {
       keys = GetFieldsToPopulate(new Download()).map(x => x.key);
