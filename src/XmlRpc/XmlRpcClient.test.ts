@@ -15,15 +15,17 @@ describe('XmlRpcClient', () => {
   });
   it('resolves the method call, returns the parameters', async () => {
     fetchMock.mockResponse(async r => {
-      return r.text();
-      // return new Promise(async (res, rej) => {
-      //   const json: any = xml2js(await r.text(), { compact: true });
-      //   let obj: any = {};
-      //   return res(json.methodCall.params.param);
-      // });
+      // return r.text();
+      return new Promise(async (res, rej) => {
+        // const json: any = xml2js(await r.text(), { compact: true });
+        console.log(await r.text());
+        let obj: any = {};
+        return res(obj);
+      });
     });
-    const dummyParameters = ['parameters', { key: 'key', values: [1, 2, 3, 4, 5] }];
-    await expect(client.methodCall('methodName', ...dummyParameters)).resolves.toStrictEqual(dummyParameters);
+    const dummyParameters = ['parameters', { key: 'value', values: [1, 2, 3, 4, 5] }];
+    await client.methodCall('MyCustomMethodToCall', ...dummyParameters);
+    // await expect(client.methodCall('methodName', ...dummyParameters)).resolves.toStrictEqual(dummyParameters);
   });
 
   // it('rejects the method call, returns with the `parameters.reject` part', async () => {

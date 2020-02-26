@@ -1,5 +1,7 @@
 import { ClientOptions, Cookies, HeadersProcessor } from './Types';
 import { js2xml, xml2js } from 'xml-js';
+import { create, XMLNode, XMLElement, XMLText } from 'xmlbuilder';
+import { RTorrentClient } from '../RTorrentClient';
 
 export class XmlRpcClient {
   private readonly clientOptions: ClientOptions;
@@ -30,6 +32,29 @@ export class XmlRpcClient {
     }
   }
 
+  public async objectToXml(jsObject: any, root: XMLElement): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (typeof jsObject === 'string') {
+        root.ele('value').ele('string', {}, jsObject);
+      } else if (typeof jsObject === 'number') {
+        root.ele('value').ele('int', {}, jsObject);
+      } else if (typeof jsObject === 'object') {
+        if (jsObject instanceof Array) {
+          const array = root.ele('array').ele('data');
+          jsObject.forEach(d => this.objectToXml(d, array));
+        } else {
+          const struct = root.ele('struct');
+          Object.keys(jsObject).forEach(async sKey => {
+            const member = struct.ele('member');
+            member.ele('name', {}, sKey);
+            await this.objectToXml(jsObject[sKey], member);
+          });
+        }
+      }
+      resolve();
+    });
+  }
+
   public async methodCall<T extends any>(method: string, ...params: any): Promise<T> {
     // return new Promise<T>((resolve, resject) => {
     const jsObj: any = {
@@ -40,30 +65,41 @@ export class XmlRpcClient {
     };
     if (params?.length > 0) {
       // TODO: parse data
-      jsObj.methodCall.params = { param: this.serializeParameters(params) };
+      // jsObj.methodCall.params = { param: this.serializeParameters(params) };
     }
-    const body = js2xml(jsObj, { compact: true });
+    const root = create('methodCall');
+    root.ele('methodName', {}, method);
+    const paramsSection = root.ele('params');
+    Object.keys(params).forEach(async param => {
+      await this.objectToXml(params[param], paramsSection.ele('param'));
+    });
+    console.log(root.end({ pretty: false }).toString());
+    return {} as any;
+    // const sxStream = createStream(false);
+    // sxStream.push(jsObj, 'utf8');
+    // console.log('SAX: ', sxStream.read());
+    // await this.objectToXml(jsObj, root);
+    // const body = js2xml(jsObj, { compact: true });
 
-    const url = `${this.clientOptions.isSecure === true ? 'https' : 'http'}://${this.clientOptions.host}:${
-      this.clientOptions.port
-    }/${this.clientOptions.path}`;
+    // const url = `${this.clientOptions.isSecure === true ? 'https' : 'http'}://${this.clientOptions.host}:${
+    //   this.clientOptions.port
+    // }/${this.clientOptions.path}`;
 
-    return fetch(url, {
-      method: this.clientOptions.method,
-      headers: this.clientOptions.headers,
-      cache: 'no-cache',
-      credentials: 'include',
-      redirect: 'follow',
-      referrerPolicy: 'no-referrer',
-      keepalive: true,
-      body: body.toString(),
-    })
-      .then(p => p.text())
-      .then(x => {
-        const response = xml2js(x, { compact: true }) as any;
-
-        return response.methodResponse.params;
-      });
+    // return fetch(url, {
+    //   method: this.clientOptions.method,
+    //   headers: this.clientOptions.headers,
+    //   cache: 'no-cache',
+    //   credentials: 'include',
+    //   redirect: 'follow',
+    //   referrerPolicy: 'no-referrer',
+    //   keepalive: true,
+    //   body: body.toString(),
+    // })
+    //   .then(p => p.text())
+    //   .then(x => {
+    //     const response = xml2js(x, { compact: true }) as any;
+    //     return response.methodResponse.params;
+    //   });
   }
 
   private serializeParameters(params: any[]) {
