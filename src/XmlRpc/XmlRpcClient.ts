@@ -1,7 +1,6 @@
 import { ClientOptions, Cookies, HeadersProcessor } from './Types';
-import { js2xml, xml2js } from 'xml-js';
-import { create, XMLNode, XMLElement, XMLText } from 'xmlbuilder';
-import { RTorrentClient } from '../RTorrentClient';
+import { CreateMethodRequest } from './Serialization';
+import { XmlRpcDeserializer } from './XmlRpcDeserializer';
 
 export class XmlRpcClient {
   private readonly clientOptions: ClientOptions;
@@ -32,57 +31,15 @@ export class XmlRpcClient {
     }
   }
 
-  public static objectToXml(jsObject: any, root: XMLElement): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (typeof jsObject === 'string') {
-        root.ele('value').ele('string', {}, jsObject);
-      } else if (typeof jsObject === 'number') {
-        root.ele('value').ele('int', {}, jsObject);
-      } else if (typeof jsObject === 'object') {
-        if (jsObject instanceof Array) {
-          const array = root.ele('array').ele('data');
-          jsObject.forEach(d => XmlRpcClient.objectToXml(d, array));
-        } else {
-          const struct = root.ele('struct');
-          Object.keys(jsObject).forEach(async sKey => {
-            const member = struct.ele('member');
-            member.ele('name', {}, sKey);
-            await XmlRpcClient.objectToXml(jsObject[sKey], member);
-          });
-        }
-      }
-      resolve();
-    });
-  }
-
-  public static async CreateMethodRequest(method: string, params: any): Promise<string> {
-    const root = create('methodCall');
-    root.ele('methodName', {}, method);
-    const paramsSection = root.ele('params');
-    Object.keys(params).forEach(async param => {
-      await XmlRpcClient.objectToXml(params[param], paramsSection.ele('param'));
-    });
-    return root.end({ pretty: false });
-  }
-
-  public async methodCall<T extends any>(method: string, ...params: any): Promise<T> {
+  public async methodCall<T extends any>(method: string, ...params: any[]): Promise<T> {
     // return new Promise<T>((resolve, resject) => {
-    const jsObj: any = {
-      methodCall: {
-        methodName: method,
-        params: null,
-      },
-    };
-    if (params?.length > 0) {
-      // TODO: parse data
-      // jsObj.methodCall.params = { param: this.serializeParameters(params) };
-    }
-    const body = await XmlRpcClient.CreateMethodRequest(method, params);
+    const body = await CreateMethodRequest(method, ...params);
 
     const url = `${this.clientOptions.isSecure === true ? 'https' : 'http'}://${this.clientOptions.host}:${
       this.clientOptions.port
     }/${this.clientOptions.path}`;
 
+    const ds = new XmlRpcDeserializer();
     return fetch(url, {
       method: this.clientOptions.method,
       headers: this.clientOptions.headers,
@@ -94,52 +51,8 @@ export class XmlRpcClient {
       body: body,
     })
       .then(p => p.text())
-      .then(x => {
-        // const response = xml2js(x, { compact: true }) as any;
-        return x as any; // response.methodResponse.params;
-      });
-  }
-
-  private serializeParameters(params: any[]) {
-    return params.map(x => ({
-      ...this.toXml(x),
-    }));
-  }
-
-  private toXml(param: any): any {
-    switch (typeof param) {
-      case 'number':
-        if (Number.isInteger(param.valueOf())) {
-          return { value: { int: param } };
-        }
-        return { value: { double: param } };
-      case 'string':
-        return { value: { string: param } };
-      case 'bigint':
-        return { value: { double: param } };
-      case 'object':
-        if (param instanceof Array) {
-          return { value: { array: { data: param.map(x => this.toXml(x)) } } };
-        } else {
-          return {
-            value: {
-              struct: {
-                member: [...Object.keys(param).map(key => ({ name: key, ...this.toXml(param[key]) }))],
-              },
-            },
-          };
-        }
-    }
-  }
-
-  private toObject(param: { value: any }): any {
-    switch (typeof param.value) {
-      case 'bigint':
-      case 'number': {
-        return param.value;
-        break;
-      }
-    }
+      .then(p => ds.DeserializeResponse(p));
+    // .then(p => ds.DeserializeResponse());
   }
 
   public headersProcessors: { processors: HeadersProcessor[] };

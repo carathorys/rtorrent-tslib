@@ -1,30 +1,35 @@
 import { XmlRpcClient } from './XmlRpcClient';
 import 'jest-fetch-mock';
-import { js2xml, xml2js } from 'xml-js';
+
+import { CreateMethodResponse } from './Serialization';
 
 describe('XmlRpcClient', () => {
   beforeEach(() => {
-    fetchMock.resetMocks();
+    // fetchMock.resetMocks();
+    fetchMock.dontMock();
   });
 
   const client: XmlRpcClient = new XmlRpcClient({
-    host: 'localhost',
-    port: 31245,
+    host: '192.168.1.100',
+    port: 80,
     path: '/RPC2',
     isSecure: false,
   });
+
   it('resolves the method call, returns the parameters', async () => {
-    fetchMock.mockResponse(async r => {
-      // return r.text();
-      return new Promise(async (res, rej) => {
-        // const json: any = xml2js(await r.text(), { compact: true });
-        console.log(await r.text());
-        let obj: any = {};
-        return res(obj);
-      });
-    });
-    const dummyParameters = ['parameters', { key: 'value', values: [1, 2, 3, 4, 5] }];
-    await client.methodCall('MyCustomMethodToCall', ...dummyParameters);
+    // fetchMock.mockResponse(async r => {
+    //   // return r.text();
+    //   return new Promise(async (res, rej) => {
+    //     // const json: any = xml2js(await r.text(), { compact: true });
+    //     const txt = await r.text();
+    //     // await ParseMethodRequest(txt);
+    //     console.log(txt);
+    //     return res(CreateMethodResponse('response', 'value'));
+    //   });
+    // });
+
+    const value = await client.methodCall('download_list');
+    console.log(value);
     // await expect(client.methodCall('methodName', ...dummyParameters)).resolves.toStrictEqual(dummyParameters);
   });
 
