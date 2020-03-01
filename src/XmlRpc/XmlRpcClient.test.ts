@@ -29,7 +29,8 @@ describe('XmlRpcClient', () => {
     // });
 
     const value = await client.methodCall('download_list');
-    console.log(value);
+    const details = await client.methodCall('d.multicall2', [...value], '', ['d.directory=', 'd.name=', 'd.hash=']);
+    console.log(details);
     // await expect(client.methodCall('methodName', ...dummyParameters)).resolves.toStrictEqual(dummyParameters);
   });
 

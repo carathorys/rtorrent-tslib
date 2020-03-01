@@ -14,7 +14,7 @@ export const objectToXml = async (jsObject: any, root: XMLElement): Promise<void
       }
     } else if (typeof jsObject === 'object') {
       if (jsObject instanceof Array) {
-        const array = root.ele('array').ele('data');
+        const array = root.ele('value').ele('array').ele('data');
         jsObject.forEach(d => objectToXml(d, array));
       } else if (jsObject instanceof Date) {
         root.ele('value').ele('date', {}, jsObject.toISOString());
@@ -37,17 +37,17 @@ export const CreateMethodRequest = async (method: string, ...params: any[]): Pro
   const root = create('methodCall');
   root.ele('methodName', {}, method);
   const paramsSection = root.ele('params');
-  params.forEach(async (param: any) => {
+  for (const param of params) {
     await objectToXml(param, paramsSection.ele('param'));
-  });
+  }
   return root.end({ pretty: false });
 };
 
 export const CreateMethodResponse = async (...params: any[]): Promise<string> => {
   const root = create('methodResponse');
   const paramsSection = root.ele('params');
-  params.forEach(async (param: any) => {
+  for (const param of params) {
     await objectToXml(param, paramsSection.ele('param'));
-  });
+  }
   return root.end({ pretty: false });
 };

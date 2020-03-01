@@ -38,7 +38,6 @@ export class XmlRpcClient {
     const url = `${this.clientOptions.isSecure === true ? 'https' : 'http'}://${this.clientOptions.host}:${
       this.clientOptions.port
     }/${this.clientOptions.path}`;
-
     const ds = new XmlRpcDeserializer();
     return fetch(url, {
       method: this.clientOptions.method,
