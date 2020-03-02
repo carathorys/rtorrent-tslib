@@ -13,10 +13,6 @@ export class XmlRpcDeserializer<T> {
   private readonly dateFormatter: DateFormatter = new DateFormatter();
   private readonly isInteger = /^-?\d+$/;
 
-  constructor() {
-
-  }
-
   push(value: any) {
     this.stack.push(value);
   }
@@ -49,7 +45,7 @@ export class XmlRpcDeserializer<T> {
   }
 
   private onOpenTag(tag: { name: string }): void {
-    if (tag.name === 'ARRAY' || tag.name === 'STRUCT') {
+    if (tag.name.toUpperCase() === 'ARRAY' || tag.name.toUpperCase() === 'STRUCT') {
       this.marks.push(this.stack.length);
     }
     this.data = [];
@@ -66,7 +62,7 @@ export class XmlRpcDeserializer<T> {
 
   private onCloseTag(tagName: { name: string }): void {
     const data = this.data.join('');
-    // try {
+
     switch (tagName.name.toUpperCase()) {
       case 'BOOLEAN':
         this.endBoolean(data);
@@ -125,7 +121,6 @@ export class XmlRpcDeserializer<T> {
         break;
       default:
         throw new Error(`Unknown XML-RPC tag '${tagName}'`);
-
     }
     // } catch (error) {
     //   this.onError(error);
@@ -133,7 +128,6 @@ export class XmlRpcDeserializer<T> {
   }
 
   private onEnd() {
-
   }
 
   private endNil() {
@@ -189,11 +183,13 @@ export class XmlRpcDeserializer<T> {
       struct[items[i]] = items[i + 1];
     }
     this.stack.splice(mark, this.stack.length - mark, struct);
+
     this.value = false;
   }
 
   private endArray(data: string) {
     const mark = this.marks.pop();
+
     this.stack.splice(mark, this.stack.length - mark, this.stack.slice(mark));
     this.value = false;
   }

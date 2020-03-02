@@ -34,7 +34,7 @@ export class XmlRpcClient {
   public async methodCall<T extends any>(method: string, ...params: any[]): Promise<T> {
     // return new Promise<T>((resolve, resject) => {
     const body = await CreateMethodRequest(method, ...params);
-
+    console.log('Sending XML body:', body);
     const url = `${this.clientOptions.isSecure === true ? 'https' : 'http'}://${this.clientOptions.host}:${
       this.clientOptions.port
     }/${this.clientOptions.path}`;
@@ -50,7 +50,10 @@ export class XmlRpcClient {
       body: body,
     })
       .then(p => p.text())
-      .then(p => ds.DeserializeResponse(p));
+      .then(p => {
+        console.log('XML response: ', p);
+        return ds.DeserializeResponse(p);
+      });
     // .then(p => ds.DeserializeResponse());
   }
 
