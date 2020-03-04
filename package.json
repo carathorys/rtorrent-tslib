@@ -15,7 +15,6 @@
     "rxjs": "^6.5.4",
     "saxophone-ts": "^0.0.0-p5",
     "xml-js": "^1.6.11",
-    "xmlbuilder2": "^1.4.1",
     "zone.js": "^0.10.2"
   },
   "description": "",

@@ -1,7 +1,9 @@
-import { create } from 'xmlbuilder2';
-import { XMLBuilder } from 'xmlbuilder2/lib/interfaces';
+// import { create } from 'xmlbuilder2';
+// import { XMLBuilder } from 'xmlbuilder2/lib/interfaces';
 
-export const objectToXml = async (jsObject: any, root: any): Promise<void> => {
+import { XmlBuilder } from './XmlBuilder';
+
+export const objectToXml = async (jsObject: any, root: XmlBuilder): Promise<void> => {
   return new Promise((resolve, reject) => {
     if (jsObject === null || undefined) {
       root.ele('value').ele('nil');
@@ -9,9 +11,9 @@ export const objectToXml = async (jsObject: any, root: any): Promise<void> => {
       root.ele('value').ele('string').txt(jsObject);
     } else if (typeof jsObject === 'number') {
       if (Number.isInteger(jsObject)) {
-        root.ele('value').ele('int').txt(jsObject);
+        root.ele('value').ele('int').txt(jsObject.toString());
       } else {
-        root.ele('value').ele('double').txt(jsObject);
+        root.ele('value').ele('double').txt(jsObject.toString());
       }
     } else if (typeof jsObject === 'object') {
       if (jsObject instanceof Array) {
@@ -35,20 +37,20 @@ export const objectToXml = async (jsObject: any, root: any): Promise<void> => {
 };
 
 export const CreateMethodRequest = async (method: string, ...params: any[]): Promise<string> => {
-  const root = create({ version: '1.0' }).ele('methodCall');
+  const root = new XmlBuilder('methodCall');
   root.ele('methodName').txt(method);
   const paramsSection = root.ele('params');
   for (const param of params) {
     await objectToXml(param, paramsSection.ele('param'));
   }
-  return root.end({ prettyPrint: false }).toString();
+  return root.end();
 };
 
 export const CreateMethodResponse = async (...params: any[]): Promise<string> => {
-  const root = create({ version: '1.0' }).ele('methodResponse');
+  const root = new XmlBuilder('methodResponse');
   const paramsSection = root.ele('params');
   for (const param of params) {
     await objectToXml(param, paramsSection.ele('param'));
   }
-  return root.end({ prettyPrint: false }).toString();
+  return root.end();
 };
