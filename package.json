@@ -14,7 +14,6 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.5.4",
     "saxophone-ts": "^0.0.0-p5",
-    "xml-js": "^1.6.11",
     "zone.js": "^0.10.2"
   },
   "description": "",
@@ -135,5 +134,5 @@
     "travis-deploy-once": "travis-deploy-once"
   },
   "typings": "dist/types/rtorrent-tslib.d.ts",
-  "version": "0.0.12"
+  "version": "0.0.13"
 }
