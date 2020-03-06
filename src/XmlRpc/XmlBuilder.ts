@@ -6,6 +6,7 @@ export class XmlBuilder {
     if (!attributes) {
       this.attributes = {};
     }
+    this.children = [];
   }
 
   public attr(key: string, value: any) {
@@ -27,7 +28,16 @@ export class XmlBuilder {
 
   public end(): string {
     if (this.children?.length > 0 || this.text?.length > 0) {
-      return `<${this.elementName}>`;
+      if (this.text?.length > 0) {
+        return `<${this.elementName}>${this.text}</${this.elementName}>`;
+      } else {
+        let str = `<${this.elementName}>`;
+        for (const child of this.children) {
+          str += child.end();
+        }
+        str += `</${this.elementName}>`;
+        return str;
+      }
     } else {
       return `<${this.elementName}/>`;
     }

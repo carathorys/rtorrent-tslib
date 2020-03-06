@@ -135,5 +135,5 @@
     "travis-deploy-once": "travis-deploy-once"
   },
   "typings": "dist/types/rtorrent-tslib.d.ts",
-  "version": "0.0.9"
+  "version": "0.0.10"
 }
