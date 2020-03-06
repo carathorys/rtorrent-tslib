@@ -50,7 +50,6 @@ export class XmlRpcClient {
       credentials: 'include',
       redirect: 'follow',
       referrerPolicy: 'no-referrer',
-      keepalive: true,
       body: body,
     })
       .then(p => p.text())
