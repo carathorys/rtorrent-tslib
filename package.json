@@ -133,6 +133,6 @@
     "test:watch": "jest --coverage --watch",
     "travis-deploy-once": "travis-deploy-once"
   },
-  "typings": "dist/types/rtorrent-tslib.d.ts",
-  "version": "0.0.13"
+  "typings": "dist/types/index.d.ts",
+  "version": "0.0.14"
 }
