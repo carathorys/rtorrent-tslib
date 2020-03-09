@@ -1,6 +1,8 @@
 import { DateFormatter } from './DateFormatter';
 import { Saxophone } from 'saxophone-ts';
+import { TextNode, CDATANode, TagCloseNode, TagOpenNode } from 'saxophone-ts/dist/types/src/static/nodes';
 
+const rStream = require('readable-stream');
 export class XmlRpcDeserializer<T> {
   private type?: any;
   private responseType?: any;
@@ -17,16 +19,17 @@ export class XmlRpcDeserializer<T> {
     this.stack.push(value);
   }
 
-  public DeserializeResponse<T extends any>(stream: string | Buffer): Promise<T> {
-    return new Promise<T>((resolve, reject) => {
+  public async DeserializeResponse<T extends any>(stream: string | any): Promise<T> {
+    return new Promise((res, rej) => {
       this.parser = new Saxophone();
       this.parser.on('tagOpen', this.onOpenTag.bind(this));
       this.parser.on('tagClose', this.onCloseTag.bind(this));
       this.parser.on('text', this.onText.bind(this));
       this.parser.on('cdata', this.onCData.bind(this));
-      this.parser.on('finish', () => {
+      this.parser.on('finish', args => {
+        console.log('Finish invoked!', args);
         if (this.type === null || this.marks.length) {
-          reject(new Error('Invalid XML-RPC message'));
+          rej(new Error('Invalid XML-RPC message'));
         } else if (this.responseType === 'fault') {
           const error: any = new Error(
             'XML-RPC fault' + (this.stack[0].faultString ? ': ' + this.stack[0].faultString : ''),
@@ -34,17 +37,21 @@ export class XmlRpcDeserializer<T> {
           error.code = this.stack[0].faultCode;
           error.faultCode = this.stack[0].faultCode;
           error.faultString = this.stack[0].faultString;
-          reject(error);
+          rej(error);
         } else {
-          resolve(this.stack[0]);
+          res(this.stack[0]);
         }
       });
-      this.parser.on('error', reject.bind(this));
-      this.parser.parse(stream);
+      this.parser.on('error', c => console.log(c));
+      this.parser
+        .parse(stream)
+        .then(() => res(this.stack[0]))
+        .catch(rej.bind(this));
     });
   }
 
-  private onOpenTag(tag: { name: string }): void {
+  private onOpenTag(tag: TagOpenNode): void {
+    console.log('OpenTag', tag);
     if (tag.name.toUpperCase() === 'ARRAY' || tag.name.toUpperCase() === 'STRUCT') {
       this.marks.push(this.stack.length);
     }
@@ -52,15 +59,16 @@ export class XmlRpcDeserializer<T> {
     this.value = tag.name === 'VALUE';
   }
 
-  private onText(text: { contents: string }): void {
+  private onText(text: TextNode): void {
+    console.log('Text', text);
     this.data.push(text.contents);
   }
 
-  private onCData(cData: { contents: string }): void {
+  private onCData(cData: CDATANode): void {
     this.data.push(cData.contents);
   }
 
-  private onCloseTag(tagName: { name: string }): void {
+  private onCloseTag(tagName: TagCloseNode): void {
     const data = this.data.join('');
 
     switch (tagName.name.toUpperCase()) {
@@ -126,8 +134,6 @@ export class XmlRpcDeserializer<T> {
     //   this.onError(error);
     // }
   }
-
-  private onEnd() {}
 
   private endNil() {
     this.push(null);

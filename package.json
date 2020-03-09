@@ -11,9 +11,10 @@
     }
   },
   "dependencies": {
+    "readable-stream": "^3.6.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.5.4",
-    "saxophone-ts": "^0.0.0-p17",
+    "saxophone-ts": "^0.0.0-p19",
     "zone.js": "^0.10.2"
   },
   "description": "",
@@ -133,5 +134,5 @@
     "travis-deploy-once": "travis-deploy-once"
   },
   "types": "dist/types/index.d.ts",
-  "version": "0.0.20"
+  "version": "0.0.21"
 }
