@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "reflect-metadata": "^0.1.13",
-    "rollup-plugin-node-builtins": "^2.1.2",
     "rxjs": "^6.5.4",
     "saxophone-ts": "^0.0.0-p17",
     "zone.js": "^0.10.2"
@@ -64,20 +63,6 @@
     "dist"
   ],
   "jest": {
-    "collectCoverageFrom": [
-      "src/*.{js,ts}"
-    ],
-    "coveragePathIgnorePatterns": [
-      "/node_modules/"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/jestConfig.js"
-    ],
-    "globals": {
-      "ts-jest": {
-        "tsConfig": "tsconfig.test.json"
-      }
-    },
     "_coverageThreshold": {
       "global": {
         "branches": 90,
@@ -86,10 +71,24 @@
         "statements": 95
       }
     },
+    "collectCoverageFrom": [
+      "src/*.{js,ts}"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tsconfig.test.json"
+      }
+    },
     "moduleFileExtensions": [
       "ts",
       "tsx",
       "js"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jestConfig.js"
     ],
     "testEnvironment": "node",
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
@@ -134,5 +133,5 @@
     "travis-deploy-once": "travis-deploy-once"
   },
   "types": "dist/types/index.d.ts",
-  "version": "0.0.19"
+  "version": "0.0.20"
 }
