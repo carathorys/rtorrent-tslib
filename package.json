@@ -14,7 +14,7 @@
     "reflect-metadata": "^0.1.13",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rxjs": "^6.5.4",
-    "saxophone-ts": "^0.0.0-p15",
+    "saxophone-ts": "^0.0.0-p16",
     "zone.js": "^0.10.2"
   },
   "description": "",
@@ -134,5 +134,5 @@
     "travis-deploy-once": "travis-deploy-once"
   },
   "types": "dist/types/index.d.ts",
-  "version": "0.0.17"
+  "version": "0.0.18"
 }
