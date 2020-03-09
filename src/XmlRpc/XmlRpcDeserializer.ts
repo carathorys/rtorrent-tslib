@@ -127,8 +127,7 @@ export class XmlRpcDeserializer<T> {
     // }
   }
 
-  private onEnd() {
-  }
+  private onEnd() {}
 
   private endNil() {
     this.push(null);
@@ -202,7 +201,7 @@ export class XmlRpcDeserializer<T> {
   private endDouble(data: string) {
     const value = parseFloat(data);
     if (isNaN(value)) {
-      throw new Error('Expected a double but got \'' + data + '\'');
+      throw new Error("Expected a double but got '" + data + "'");
     } else {
       this.push(value);
       this.value = false;
@@ -211,7 +210,7 @@ export class XmlRpcDeserializer<T> {
 
   private endI8(data: string) {
     if (!this.isInteger.test(data)) {
-      throw new Error('Expected integer (I8) value but got \'' + data + '\'');
+      throw new Error("Expected integer (I8) value but got '" + data + "'");
     } else {
       this.endString(data);
     }
@@ -220,7 +219,7 @@ export class XmlRpcDeserializer<T> {
   private endInt(data: string) {
     const value = parseInt(data, 10);
     if (isNaN(value)) {
-      throw new Error('Expected an integer but got \'' + data + '\'');
+      throw new Error("Expected an integer but got '" + data + "'");
     } else {
       this.push(value);
       this.value = false;
@@ -233,7 +232,7 @@ export class XmlRpcDeserializer<T> {
     } else if (data === '0') {
       this.push(false);
     } else {
-      throw new Error('Illegal boolean value \'' + data + '\'');
+      throw new Error("Illegal boolean value '" + data + "'");
     }
     this.value = false;
   }

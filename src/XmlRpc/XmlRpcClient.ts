@@ -3,6 +3,10 @@ import { CreateMethodRequest } from './Serialization';
 import { XmlRpcDeserializer } from './XmlRpcDeserializer';
 
 export class XmlRpcClient {
+  public headersProcessors: { processors: HeadersProcessor[] };
+  public Cookies: Cookies;
+  public isSecure: boolean;
+  public options: ClientOptions;
   private readonly clientOptions: ClientOptions;
 
   constructor(options: ClientOptions) {
@@ -34,6 +38,7 @@ export class XmlRpcClient {
   public async methodCall<T extends any>(method: string, ...params: any[]): Promise<T> {
     // return new Promise<T>((resolve, resject) => {
     const body = await CreateMethodRequest(method, ...params);
+    console.log('Sending XMLRPC body:', body);
     const url = `${this.clientOptions.isSecure === true ? 'https' : 'http'}://${this.clientOptions.host}:${
       this.clientOptions.port
     }/${this.clientOptions.path}`;
@@ -45,7 +50,6 @@ export class XmlRpcClient {
       credentials: 'include',
       redirect: 'follow',
       referrerPolicy: 'no-referrer',
-      keepalive: true,
       body: body,
     })
       .then(p => p.text())
@@ -54,14 +58,6 @@ export class XmlRpcClient {
       });
     // .then(p => ds.DeserializeResponse());
   }
-
-  public headersProcessors: { processors: HeadersProcessor[] };
-
-  public Cookies: Cookies;
-
-  public isSecure: boolean;
-
-  public options: ClientOptions;
 
   public getCookie(name: string): string {
     return this.Cookies.get('name');
