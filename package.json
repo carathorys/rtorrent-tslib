@@ -1,9 +1,32 @@
 {
+  "name": "rtorrent-tslib",
+  "version": "0.0.23",
+  "scripts": {
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts && npm run docs",
+    "commit": "git-cz",
+    "deploy-docs": "ts-node tools/gh-pages-publish",
+    "docs": "typedoc --out docs --target es6 --theme minimal --mode file src --exclude **/*.test.ts --excludeExternals --excludePrivate --excludeNotExported",
+    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "prebuild": "rimraf dist",
+    "precommit": "lint-staged",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "semantic-release": "semantic-release",
+    "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
+    "start": "rollup -c rollup.config.ts -w",
+    "test": "jest --coverage",
+    "test:prod": "npm run lint && npm run test -- --no-cache",
+    "test:watch": "jest --coverage --watch",
+    "travis-deploy-once": "travis-deploy-once"
+  },
   "author": "carathorys <gallayb@gmail.com>",
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
     ]
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
   },
   "config": {
     "commitizen": {
@@ -14,7 +37,7 @@
     "readable-stream": "^3.6.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.5.4",
-    "saxophone-ts": "^0.0.0-p21",
+    "saxophone-ts": "^0.6.2",
     "zone.js": "^0.10.2"
   },
   "description": "",
@@ -111,28 +134,5 @@
   },
   "main": "dist/rtorrent-tslib.umd.js",
   "module": "dist/rtorrent-tslib.es5.js",
-  "name": "rtorrent-tslib",
-  "repository": {
-    "type": "git",
-    "url": ""
-  },
-  "scripts": {
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts && npm run docs",
-    "commit": "git-cz",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
-    "docs": "typedoc --out docs --target es6 --theme minimal --mode file src --exclude **/*.test.ts --excludeExternals --excludePrivate --excludeNotExported",
-    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "prebuild": "rimraf dist",
-    "precommit": "lint-staged",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls",
-    "semantic-release": "semantic-release",
-    "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "start": "rollup -c rollup.config.ts -w",
-    "test": "jest --coverage",
-    "test:prod": "npm run lint && npm run test -- --no-cache",
-    "test:watch": "jest --coverage --watch",
-    "travis-deploy-once": "travis-deploy-once"
-  },
-  "types": "dist/types/index.d.ts",
-  "version": "0.0.22"
+  "types": "dist/types/index.d.ts"
 }
