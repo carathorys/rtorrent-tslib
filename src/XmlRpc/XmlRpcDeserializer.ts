@@ -26,8 +26,7 @@ export class XmlRpcDeserializer<T> {
       this.parser.on('tagClose', this.onCloseTag.bind(this));
       this.parser.on('text', this.onText.bind(this));
       this.parser.on('cdata', this.onCData.bind(this));
-      this.parser.on('finish', args => {
-        console.log('Finish invoked!', args);
+      this.parser.on('finish', () => {
         if (this.type === null || this.marks.length) {
           rej(new Error('Invalid XML-RPC message'));
         } else if (this.responseType === 'fault') {
@@ -42,16 +41,13 @@ export class XmlRpcDeserializer<T> {
           res(this.stack[0]);
         }
       });
-      this.parser.on('error', c => console.log(c));
-      this.parser
-        .parse(stream)
-        .then(() => res(this.stack[0]))
-        .catch(rej.bind(this));
+      this.parser.on('error', (c: any) => rej(c));
+      this.parser.parse(stream);
+      this.parser.end();
     });
   }
 
   private onOpenTag(tag: TagOpenNode): void {
-    console.log('OpenTag', tag);
     if (tag.name.toUpperCase() === 'ARRAY' || tag.name.toUpperCase() === 'STRUCT') {
       this.marks.push(this.stack.length);
     }
@@ -60,7 +56,6 @@ export class XmlRpcDeserializer<T> {
   }
 
   private onText(text: TextNode): void {
-    console.log('Text', text);
     this.data.push(text.contents);
   }
 

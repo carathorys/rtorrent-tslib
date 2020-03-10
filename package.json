@@ -14,7 +14,7 @@
     "readable-stream": "^3.6.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.5.4",
-    "saxophone-ts": "^0.0.0-p19",
+    "saxophone-ts": "^0.0.0-p21",
     "zone.js": "^0.10.2"
   },
   "description": "",
