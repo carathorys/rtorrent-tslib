@@ -134,5 +134,5 @@
     "travis-deploy-once": "travis-deploy-once"
   },
   "types": "dist/types/index.d.ts",
-  "version": "0.0.21"
+  "version": "0.0.22"
 }
