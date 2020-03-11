@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodResponse>
+  <params>
+    <param>
+      <value>
+        <array>
+          <data>
+            <value>
+              <string>T1</string>
+            </value>
+            <value>
+              <string>T2</string>
+            </value>
+            <value>
+              <string>T3</string>
+            </value>
+          </data>
+        </array>
+      </value>
+    </param>
+  </params>
+</methodResponse>

@@ -168,6 +168,7 @@ export class XmlRpcDeserializer<T> {
 
   private endBase64(data: string) {
     const buffer = Buffer.alloc(data.length, 0, 'base64');
+    buffer.write(data);
     this.push(buffer);
     this.value = false;
   }
@@ -236,9 +237,4 @@ export class XmlRpcDeserializer<T> {
     }
     this.value = false;
   }
-
-  //
-  // public DeserializeRequest<T extends any>(s: string): Promise<T> {
-  //   throw new Error('Not implemented!');
-  // }
 }

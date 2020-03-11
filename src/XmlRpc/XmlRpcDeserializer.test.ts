@@ -22,14 +22,19 @@ describe('XmlRpcDeserializer', () => {
   });
 
   it('should parse an array', async () => {
-    const result = await deserializer.DeserializeResponse('<array><data><string>x</string><i4>3</i4><double>3.3</double></data></array>');
+    const result = await deserializer.DeserializeResponse(
+      '<array><data><string>x</string><i4>3</i4><double>3.3</double></data></array>',
+    );
     expect(result).toStrictEqual(['x', 3, 3.3]);
   });
 
   it('should parse a simple with one key', async () => {
-    const result = await deserializer.DeserializeResponse('<struct><member><name>key</name><value><string>value</string></value></member></struct>');
+    const result = await deserializer.DeserializeResponse(
+      '<struct><member><name>key</name><value><string>value</string></value></member></struct>',
+    );
     expect(result).toStrictEqual({ key: 'value' });
   });
+
   it('should parse a simple with multiple keys', async () => {
     const result = await deserializer.DeserializeResponse(`<struct>
 <member><name>key1</name><value><string>value1</string></value></member>
@@ -57,5 +62,10 @@ describe('XmlRpcDeserializer', () => {
   </member>
 </struct>`);
     expect(result).toStrictEqual({ key1: ['Data', 136, 3.3] });
+  });
+
+  it('should parse base64 encoded string', async () => {
+    const result = await deserializer.DeserializeResponse('<data><base64>VGhpcyBzdHJpbmcgc2hvdWxkIGJlIHJlc3RvcmVk</base64></data>')
+    console.log('result', result)
   });
 });
