@@ -52,9 +52,7 @@ export class XmlRpcClient {
       body: body,
     })
       .then(p => p.text())
-      .then(p => {
-        return ds.DeserializeResponse(p);
-      });
+      .then(p => ds.DeserializeResponse(p));
     // .then(p => ds.DeserializeResponse());
   }
 

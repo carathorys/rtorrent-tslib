@@ -19,7 +19,7 @@ export class XmlRpcDeserializer<T> {
     this.stack.push(value);
   }
 
-  public async DeserializeResponse<T extends any>(stream: string | any): Promise<T> {
+  public async DeserializeResponse<T extends any>(input: string | any): Promise<T> {
     return new Promise((res, rej) => {
       this.parser = new Saxophone();
       this.parser.on('tagOpen', this.onOpenTag.bind(this));
@@ -27,6 +27,7 @@ export class XmlRpcDeserializer<T> {
       this.parser.on('text', this.onText.bind(this));
       this.parser.on('cdata', this.onCData.bind(this));
       this.parser.on('finish', () => {
+        console.log('Finished parsing', this.stack[0]);
         if (this.type === null || this.marks.length) {
           rej(new Error('Invalid XML-RPC message'));
         } else if (this.responseType === 'fault') {
@@ -42,8 +43,7 @@ export class XmlRpcDeserializer<T> {
         }
       });
       this.parser.on('error', (c: any) => rej(c));
-      this.parser.parse(stream);
-      this.parser.end();
+      this.parser.parse(input);
     });
   }
 

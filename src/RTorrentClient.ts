@@ -34,6 +34,7 @@ export class RTorrentClient {
     }
     const mappedKeys = this.PrepareQuery(keys)?.map((x: string) => `${x}=`);
     return (await this.client.methodCall('d.multicall2', torrentIds, '', ...mappedKeys)).map((x: []) => {
+      console.log('Method call done, results: ', x);
       const obj: Download = new Download();
       keys.forEach((key, index) => {
         obj.setValue(key, x[index]);
