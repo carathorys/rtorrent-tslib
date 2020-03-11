@@ -43,9 +43,8 @@ function torrentGenerator(count: number = 5) {
 }
 
 const torrents = torrentGenerator(100);
-// tslint:disable-next-line: variable-name
-const torrent_id_list = torrents.map(x => x.hash);
-// tslint:disable-next-line: variable-name
+const torrentIdList = torrents.map(x => x.hash);
+
 const methodCall = (method: string, parameters: any[], callback?: (err: any, val: any) => void) => {
   const error = parameters.filter(x => x.error === true);
   if (typeof callback !== 'undefined') {
@@ -57,7 +56,7 @@ const methodCall = (method: string, parameters: any[], callback?: (err: any, val
           callback(undefined, torrents);
           break;
         case 'download_list':
-          callback(undefined, torrent_id_list);
+          callback(undefined, torrentIdList);
           break;
         case 'system.listMethods':
           callback(undefined, METHOD_LIST);
@@ -69,8 +68,7 @@ const methodCall = (method: string, parameters: any[], callback?: (err: any, val
 
 describe('RTorrentClient', () => {
   beforeEach(() => {
-    // ignore
-    fetchMock.dontMock()
+    // fetchMock.mockResponse(methodCall);
   });
   // const client = new RTorrentClient({
   //   host: '192.168.1.100',
