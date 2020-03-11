@@ -27,7 +27,6 @@ export class XmlRpcDeserializer<T> {
       this.parser.on('text', this.onText.bind(this));
       this.parser.on('cdata', this.onCData.bind(this));
       this.parser.on('finish', () => {
-        console.log('Finished parsing', this.stack[0]);
         if (this.type === null || this.marks.length) {
           rej(new Error('Invalid XML-RPC message'));
         } else if (this.responseType === 'fault') {

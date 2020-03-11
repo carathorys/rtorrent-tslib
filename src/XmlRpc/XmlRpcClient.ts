@@ -2,6 +2,8 @@ import { ClientOptions, Cookies, HeadersProcessor } from './Types';
 import { CreateMethodRequest } from './Serialization';
 import { XmlRpcDeserializer } from './XmlRpcDeserializer';
 
+const Buffer = require('buffer');
+
 export class XmlRpcClient {
   public headersProcessors: { processors: HeadersProcessor[] };
   public Cookies: Cookies;
@@ -53,7 +55,6 @@ export class XmlRpcClient {
     })
       .then(p => p.text())
       .then(p => ds.DeserializeResponse(p));
-    // .then(p => ds.DeserializeResponse());
   }
 
   public getCookie(name: string): string {
