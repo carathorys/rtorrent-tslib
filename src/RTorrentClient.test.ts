@@ -67,21 +67,6 @@ const methodCall = (method: string, parameters: any[], callback?: (err: any, val
   }
 };
 
-// jest.mock('xmlrpc', () => {
-//   return {
-//     createClient: () => {
-//       return {
-//         methodCall,
-//       }
-//     },
-//     createSecureClient: () => {
-//       return {
-//         methodCall,
-//       }
-//     },
-//   }
-// })
-
 describe('RTorrentClient', () => {
   beforeEach(() => {
     // ignore
