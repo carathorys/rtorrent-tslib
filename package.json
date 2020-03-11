@@ -1,6 +1,6 @@
 {
   "name": "rtorrent-tslib",
-  "version": "0.0.24",
+  "version": "0.0.0-development",
   "scripts": {
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && npm run docs",
     "commit": "git-cz",
