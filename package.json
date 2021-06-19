@@ -35,7 +35,7 @@
   "dependencies": {
     "readable-stream": "^3.6.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^6.5.4",
+    "rxjs": "^6.6.7",
     "saxophone-ts": "^0.6.4",
     "process": "0.11.10",
     "zone.js": "^0.10.2"
